@@ -47,12 +47,25 @@ resource "aws_launch_template" "green" {
   # User data para instalar Nginx
   user_data = base64encode(<<-EOF
               #!/bin/bash
+              # Enable nginx from Amazon Linux Extras
               sudo yum update -y
-              sudo yum install -y nginx
+              sudo amazon-linux-extras install nginx1 -y
+
+              # Create custom index page
+              sudo tee /usr/share/nginx/html/index.html > /dev/null << 'HTML'
+              <html>
+              <head></head>
+              <body bgcolor="#98FB98">
+              <h1>Lab 3 - Blue/Green Deployment Use Case</h1>
+              <h2>This is our Green Environment</h2>
+              </body>
+              </html>
+              HTML
+
               sudo systemctl enable nginx
               sudo systemctl start nginx
-              EOF
-            )
+            EOF
+          )
 }
 
 
@@ -99,4 +112,3 @@ resource "aws_autoscaling_group" "blue_asg" {
                                                                                   propagate_at_launch = true
                                                                                     }
                                                                                   }
-
