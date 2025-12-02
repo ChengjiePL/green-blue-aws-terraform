@@ -3,3 +3,4 @@ yes*
 .terraform/
 *.tfstate
 *.tfstate.backup
+.terraform*
